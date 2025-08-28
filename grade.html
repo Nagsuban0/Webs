@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Name</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .output {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: #212529;
+    }
+
+    .loading {
+      color: #ffc107;
+    }
+
+    .success {
+      color: #28a745;
+    }
+
+    .error {
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">MyWebsite</div>
+
+  <div class="container">
+    <h2>Enter Your Full Name</h2>
+    <input type="text" id="fullNameInput" placeholder="Your Full Name"/>
+    <button onclick="submitName()">Submit</button>
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-AWIFoG-3L0K-VhkQ2haTh4KXvKkuacE3zvxNMONb5iHn9mk2mZGwF8f6-7fq5QLykA/exec";
+
+    function submitName() {
+      const nameField = document.getElementById("fullNameInput");
+      const output = document.getElementById("output");
+      const name = nameField.value.trim();
+
+      if (name === "") {
+        output.textContent = "Please enter your full name.";
+        output.className = "output error";
+        return;
+      }
+
+      output.textContent = "Submitting...";
+      output.className = "output loading";
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `fullName=${encodeURIComponent(name)}`
+      })
+      .then(response => response.text())
+      .then(result => {
+        output.textContent = `Thank you, ${name}. Your name has been recorded.`;
+        output.className = "output success";
+        nameField.value = "";
+      })
+      .catch(error => {
+        output.textContent = "Something went wrong. Please try again later.";
+        output.className = "output error";
+        console.error("Error!", error.message);
+      });
+    }
+  </script>
+
+</body>
+</html>
