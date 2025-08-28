@@ -108,13 +108,18 @@
       fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `fullName=${encodeURIComponent(name)}`
+        body: `name=${encodeURIComponent(name)}`
       })
       .then(response => response.text())
       .then(result => {
-        output.textContent = `Thank you, ${name}. Your name has been recorded.`;
-        output.className = "output success";
-        nameField.value = "";
+        if(result.includes("Success")) {
+          output.textContent = `Thank you, ${name}. Your name has been recorded.`;
+          output.className = "output success";
+          nameField.value = "";
+        } else {
+          output.textContent = result;
+          output.className = "output error";
+        }
       })
       .catch(error => {
         output.textContent = "Something went wrong. Please try again later.";
@@ -122,6 +127,7 @@
         console.error("Error!", error.message);
       });
     }
+    //Hello world
   </script>
 
 </body>
